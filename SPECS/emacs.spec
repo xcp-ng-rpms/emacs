@@ -4,7 +4,7 @@ Summary:        GNU Emacs text editor
 Name:           emacs
 Epoch:          1
 Version:        24.3
-Release:        20%{?dist}
+Release:        20.1%{?dist}
 License:        GPLv3+
 URL:            http://www.gnu.org/software/emacs/
 Group:          Applications/Editors
@@ -52,7 +52,7 @@ Patch101:       emacs-24.3-hunspell.2.patch
 
 
 BuildRequires:  atk-devel cairo-devel freetype-devel fontconfig-devel dbus-devel giflib-devel glibc-devel libpng-devel
-BuildRequires:  libjpeg-devel libtiff-devel libX11-devel libXau-devel libXdmcp-devel libXrender-devel libXt-devel
+# XCP-ng removed X11 support
 BuildRequires:  libXpm-devel ncurses-devel xorg-x11-proto-devel zlib-devel gnutls-devel
 BuildRequires:  librsvg2-devel m17n-lib-devel libotf-devel ImageMagick-devel libselinux-devel
 BuildRequires:  GConf2-devel alsa-lib-devel gpm-devel liblockfile-devel libxml2-devel
@@ -66,7 +66,8 @@ BuildRequires:  python2-devel
 # Buildrequire both python2 and python3 on systems containing both,
 # since below we turn off the brp-python-bytecompile script
 %else
-BuildRequires:  gtk3-devel
+# XCP-ng removed X11 support
+# BuildRequires:  gtk3-devel
 BuildRequires:  python2-devel
 BuildRequires:  python3-devel
 %endif
@@ -286,6 +287,8 @@ export CFLAGS="-DMAIL_USE_LOCKF $RPM_OPT_FLAGS"
 %else
 %define toolkit gtk3
 %endif
+# XCP-ng is using text term
+%define toolkit no
 
 %configure --with-dbus --with-gif --with-jpeg --with-png --with-rsvg \
            --with-tiff --with-xft --with-xpm --with-x-toolkit=%{toolkit} --with-gpm=no
@@ -510,6 +513,10 @@ update-desktop-database &> /dev/null || :
 %dir %{_datadir}/emacs/site-lisp/site-start.d
 
 %changelog
+* Fri Nov 27 2026 Philippe Coval <philippe.coval@vates.tech> - 1:24.3-20.1
+- Build only for text term
+- Rebuild on updated gnutls
+
 * Tue Sep 12 2017 Jan Synáček <jsynacek@redhat.com> - 1:24.3-20
 - fix unsafe enriched mode translations (#1490452)
 
